@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>澳大利亚移民项目资格评估</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:#f5f6f8;color:#1a1a1a;line-height:1.6;-webkit-text-size-adjust:100%}
+.container{max-width:720px;margin:0 auto;padding:0 0 40px}
+.header{background:linear-gradient(135deg,#0b3d2e,#1a8a5a);color:#fff;padding:32px 20px 28px;text-align:center;position:sticky;top:0;z-index:10}
+.header h1{font-size:22px;margin-bottom:4px}
+.header p{opacity:.85;font-size:13px}
+.card{background:#fff;border-radius:14px;padding:24px 18px;margin:16px 12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h2{font-size:17px;color:#0b3d2e;margin-bottom:16px;padding-bottom:10px;border-bottom:1.5px solid #eef1f5;display:flex;align-items:center;gap:8px}
+.card h2 .num{background:#0b3d2e;color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.fg{margin-bottom:16px}
+.fg label.q{display:block;font-weight:600;font-size:14px;margin-bottom:5px;color:#333}
+.fg .hint{font-size:12px;color:#999;margin-bottom:4px;font-weight:400}
+.fg select,.fg input[type=text]{width:100%;padding:11px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;transition:border .2s;background:#fafafa;-webkit-appearance:none}
+.fg select:focus,.fg input:focus{outline:none;border-color:#1a8a5a;background:#fff}
+.detail-input{margin-top:8px;display:none}
+.detail-input.show{display:block}
+.detail-input input{width:100%;padding:10px 12px;border:1.5px solid #b8e6d0;border-radius:8px;font-size:14px;background:#e8faf2}
+.detail-input input::placeholder{color:#999}
+.detail-input .label-sm{font-size:12px;color:#666;margin-bottom:4px;display:block}
+.radio-row{display:flex;gap:10px;flex-wrap:wrap}
+.radio-row .ropt{flex:1;min-width:80px;padding:10px 16px;border:1.5px solid #ddd;border-radius:8px;text-align:center;cursor:pointer;font-size:14px;background:#fafafa;transition:all .15s;user-select:none}
+.radio-row .ropt:active,.radio-row .ropt.sel{border-color:#1a8a5a;background:#e8faf2;font-weight:600;color:#0b3d2e}
+.radio-row input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.btn{display:block;width:calc(100% - 24px);margin:20px auto;padding:14px;background:linear-gradient(135deg,#0b3d2e,#1a8a5a);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer}
+.btn:active{transform:scale(.98)}
+
+.eoi-box{background:#f0faf5;border:1.5px solid #b8e6d0;border-radius:10px;padding:16px;margin-top:12px}
+.eoi-box h3{font-size:14px;color:#0b3d2e;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.eoi-box .pts-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px dashed #d4ece0}
+.eoi-box .pts-row .pts{font-weight:700;color:#0b3d2e;min-width:36px;text-align:right}
+.eoi-box .pts-total{font-size:16px;font-weight:700;color:#0b3d2e;padding-top:8px;margin-top:6px;border-top:2px solid #1a8a5a}
+.eoi-box .pts-total .pts{font-size:20px}
+
+.results-wrap{display:none;margin:0 12px}
+.results-wrap.show{display:block}
+.rs-card{background:#fff;border-radius:14px;padding:20px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.rs-card h3{font-size:18px;margin-bottom:6px;color:#0b3d2e}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px}
+.tg{background:#dcfce7;color:#166534}
+.ty{background:#fef3c7;color:#92400e}
+.tr{background:#fee2e2;color:#991b1b}
+.prog{background:#f8fafc;border-radius:10px;padding:16px;margin-bottom:10px}
+.prog.el{border-left:4px solid #22c55e}
+.prog.mb{border-left:4px solid #f59e0b}
+.prog.no{border-left:4px solid #e0e0e0;opacity:.85}
+.prog h4{font-size:15px;margin-bottom:6px;color:#0b3d2e}
+.prog .st{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:6px}
+.st-q{background:#dcfce7;color:#166534}.st-m{background:#fef3c7;color:#92400e}.st-n{background:#fee2e2;color:#991b1b}
+.prog .d{font-size:13px;color:#555;line-height:1.7}
+.g{color:#166534;font-weight:600}.o{color:#c2410c;font-weight:600}
+table.cm{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+table.cm th,table.cm td{border:1px solid #e2e8f0;padding:7px;text-align:center}
+table.cm th{background:#f1f5f9;font-weight:600;font-size:11px}
+table.cm td:first-child{text-align:left;font-weight:500}
+.hb{background:#e8faf2;border:1px solid #b8e6d0;border-radius:8px;padding:12px;margin:10px 0;font-size:13px}
+.hb.w{background:#fff7ed;border-color:#fed7aa}
+.btn-sm{display:inline-block;padding:10px 20px;margin:4px 0;background:#eef1f5;color:#555;border:none;border-radius:8px;font-size:13px;cursor:pointer}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid #ddd;border-top-color:#1a8a5a;border-radius:50%;animation:spin .8s linear infinite;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:400px){.radio-row .ropt{min-width:60px;padding:8px 12px;font-size:13px}.card{padding:18px 14px;margin:10px 8px}.header h1{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>🇦🇺 澳大利亚移民项目资格评估</h1><p>基于Home Affairs 2025-2026政策 · 约5分钟</p></div>
+
+<form id="qform">
+
+<!-- ===== 1. 基本信息 ===== -->
+<div class="card"><h2><span class="num">1</span> 基本信息</h2>
+<div class="fg"><label class="q">年龄</label><select id="age"><option value="">请选择</option><option value="18-24">18-24岁（EOI +25分）</option><option value="25-32">25-32岁（EOI +30分）</option><option value="33-39">33-39岁（EOI +25分）</option><option value="40-44">40-44岁（EOI +15分）</option><option value="45+">45岁及以上（EOI +0分）</option></select></div>
+<div class="fg"><label class="q">国籍/户籍</label><select id="nationality"><option value="">请选择</option><option value="cn">中国内地居民</option><option value="hkmo-tw">港澳台居民</option><option value="other">其他国家</option></select></div>
+<div class="fg"><label class="q">是否有无犯罪记录<span class="hint">(选择“是”表示无犯罪记录；所有签证均要求无犯罪记录)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="nocrim" value="yes"> 是</label><label class="ropt"><input type="radio" name="nocrim" value="no"> 否</label></div></div>
+<div class="fg"><label class="q">健康状况是否良好<span class="hint">(所有签证均需体检)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="health" value="yes"> 是</label><label class="ropt"><input type="radio" name="health" value="no"> 否</label></div></div>
+</div>
+
+<!-- ===== 2. 职业与学历 ===== -->
+<div class="card"><h2><span class="num">2</span> 职业与学历</h2>
+<div class="fg"><label class="q">最高学历</label><select id="education"><option value="">请选择</option><option value="phd">博士</option><option value="master">硕士</option><option value="bachelor">学士（本科）</option><option value="diploma">大专/文凭（Diploma）</option><option value="below">高中及以下</option></select></div>
+<div class="fg" id="fg-stem" style="display:none"><label class="q">硕/博士是否为STEM学科？<span class="hint">(科学、技术、工程、数学——在澳完成研究型硕博可+10分)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="stem" value="yes"> 是</label><label class="ropt"><input type="radio" name="stem" value="no"> 否</label></div></div>
+<div class="fg" id="fg-stem-aus" style="display:none"><label class="q">STEM硕/博士是否在澳大利亚完成（研究型）？<span class="hint">(EOI Specialist Education +10分)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="stem_aus" value="yes"> 是，澳洲研究型</label><label class="ropt"><input type="radio" name="stem_aus" value="no"> 否</label></div></div>
+<div class="fg"><label class="q">职业领域</label><select id="occupation"><option value="">请选择</option><option value="it">IT/软件/数据</option><option value="engineering">工程/建筑</option><option value="health">医疗/护理/健康</option><option value="education">教育/学术</option><option value="finance">金融/会计</option><option value="trades">技工/技术工种</option><option value="science">科研/科学</option><option value="business">商业/管理</option><option value="other">其他</option></select></div>
+<div class="fg"><label class="q">职业是否在澳大利亚技术移民职业清单上？<span class="hint">(MLTSSL/STSOL/CSOL——影响189/190/491/482资格)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="onlist" value="yes"> 是，在MLTSSL</label><label class="ropt"><input type="radio" name="onlist" value="stsol"> 是，在STSOL</label><label class="ropt"><input type="radio" name="onlist" value="csol"> 是，在CSOL</label><label class="ropt"><input type="radio" name="onlist" value="unknown"> 不确定</label><label class="ropt"><input type="radio" name="onlist" value="no"> 否，不在清单上</label></div>
+<div id="dt-occupation" class="detail-input"><span class="label-sm">具体职业名称（英文）：</span><input type="text" id="occupation-name" placeholder="例如：Software Engineer / Registered Nurse"></div></div>
+<div class="fg"><label class="q">职业评估（Skills Assessment）状态<span class="hint">(技术移民核心材料，由指定评估机构出具)</span></label><select id="skills-assessment"><option value="">请选择</option><option value="obtained">✅ 已获得</option><option value="in-progress">⏳ 进行中</option><option value="not-started">❌ 尚未开始</option></select></div>
+<div class="fg"><label class="q">是否在澳大利亚完成至少2年全日制学习？<span class="hint">(EOI Australian Study +5分)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="aus_study" value="yes"> 是</label><label class="ropt"><input type="radio" name="aus_study" value="no"> 否</label></div>
+<div id="dt-aus-study" class="detail-input"><span class="label-sm">院校及专业：</span><input type="text" id="aus-study-name" placeholder="例如：University of Melbourne, IT"></div></div>
+</div>
+
+<!-- ===== 3. 英语能力 ===== -->
+<div class="card"><h2><span class="num">3</span> 英语能力</h2>
+<div class="fg"><label class="q">雅思IELTS / PTE成绩等级<span class="hint">(以各项最低分计)</span></label><select id="english"><option value="">请选择</option><option value="8">Superior 雅思各项8分+ / PTE 79+（EOI +20分）</option><option value="7">Proficient 雅思各项7分+ / PTE 65+（EOI +10分）</option><option value="6">Competent 雅思各项6分+ / PTE 50+（EOI +0分，最低门槛）</option><option value="5">Functional 雅思各项5分+ / PTE 36+（482 SID可用）</option><option value="below">未达到/未考</option></select></div>
+</div>
+
+<!-- ===== 4. 工作经验 ===== -->
+<div class="card"><h2><span class="num">4</span> 工作经验</h2>
+<div class="fg"><label class="q">海外工作经验年限（非澳大利亚）<span class="hint">(提名职业相关)</span></label><select id="overseas-exp"><option value="">请选择</option><option value="0-2">0-2年（EOI +0分）</option><option value="3-4">3-4年（EOI +5分）</option><option value="5-7">5-7年（EOI +10分）</option><option value="8+">8年及以上（EOI +15分）</option></select></div>
+<div class="fg"><label class="q">澳大利亚工作经验年限<span class="hint">(提名职业相关，EOI额外加分)</span></label><select id="aus-exp"><option value="">请选择</option><option value="0">无</option><option value="1-2">1-2年（EOI +5分）</option><option value="3-4">3-4年（EOI +10分）</option><option value="5-7">5-7年（EOI +15分）</option><option value="8+">8年及以上（EOI +20分）</option></select></div>
+</div>
+
+<!-- ===== 5. 雇主与薪资 ===== -->
+<div class="card"><h2><span class="num">5</span> 雇主与薪资</h2>
+<div class="fg"><label class="q">是否已获得澳大利亚雇主工作offer？</label><div class="radio-row"><label class="ropt"><input type="radio" name="aus_offer" value="yes"> 是</label><label class="ropt"><input type="radio" name="aus_offer" value="no"> 否</label></div>
+<div id="dt-offer" class="detail-input"><span class="label-sm">雇主名称及职位：</span><input type="text" id="offer-info" placeholder="例如：Atlassian, Senior Developer"></div></div>
+<div class="fg" id="fg-salary" style="display:none"><label class="q">澳大利亚工作年薪（AUD）<span class="hint">(决定482 SID适用流)</span></label><select id="aus-salary"><option value="">请选择</option><option value="gte141k">≥ $141,210 AUD（Specialist Skills Stream）</option><option value="76k-141k">$76,515 - $141,210（Core Skills Stream）</option><option value="lt76k">低于 $76,515 AUD</option></select></div>
+<div class="fg"><label class="q">雇主所在地是否为偏远地区？<span class="hint">(悉尼/墨尔本/布里斯班以外——影响491/494资格)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="regional" value="yes"> 是</label><label class="ropt"><input type="radio" name="regional" value="no"> 否</label></div></div>
+</div>
+
+<!-- ===== 6. 成就与创新 ===== -->
+<div class="card"><h2><span class="num">6</span> 成就与创新（858 NIV评估）</h2>
+<div class="fg"><label class="q">是否获得国际公认的顶级奖项？<span class="hint">(诺贝尔奖/奥运奖牌/国际顶级科技奖等——NIV Tier 1)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="awards" value="yes"> 是</label><label class="ropt"><input type="radio" name="awards" value="no"> 否</label></div>
+<div id="dt-awards" class="detail-input"><span class="label-sm">奖项名称：</span><input type="text" id="awards-info" placeholder="例如：图灵奖 / 奥运会金牌"></div></div>
+<div class="fg"><label class="q">是否在专业领域有杰出成就/国际知名度？<span class="hint">(论文/专利/国际会议/行业影响力等)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="achievement" value="yes"> 是</label><label class="ropt"><input type="radio" name="achievement" value="no"> 否</label></div>
+<div id="dt-achievement" class="detail-input"><span class="label-sm">简述成就（领域/成果）：</span><input type="text" id="achievement-info" placeholder="例如：AI领域 50+论文 3项专利"></div></div>
+<div class="fg" id="fg-innovation" style="display:none"><label class="q">所属创新领域<span class="hint">(NIV优先领域)</span></label><select id="innovation-field"><option value="">请选择</option><option value="tier1">Tier 1：关键科技/健康产业/可再生能源与低排放</option><option value="tier2">Tier 2：农业食品/国防太空/教育/金融科技/基础设施</option><option value="other">其他领域</option></select></div>
+<div class="fg" id="fg-nominator" style="display:none"><label class="q">是否有澳大利亚组织或个人愿意提名？<span class="hint">(在相关领域有全国声誉的澳组织/个人)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="nominator" value="yes"> 是</label><label class="ropt"><input type="radio" name="nominator" value="no"> 否</label></div></div>
+</div>
+
+<!-- ===== 7. 家庭与配偶 ===== -->
+<div class="card"><h2><span class="num">7</span> 家庭与配偶（EOI加分）</h2>
+<div class="fg"><label class="q">婚姻/伴侣状态</label><select id="partner-status"><option value="">请选择</option><option value="single">单身（EOI +10分）</option><option value="skilled">有配偶/伴侣——配偶通过职业评估+ Competent English（EOI +10分）</option><option value="english-only">有配偶/伴侣——配偶仅Competent English（EOI +5分）</option><option value="aus-pr">配偶是澳大利亚公民/PR（EOI +10分）</option><option value="none">有配偶/伴侣——不符合上述条件（EOI +0分）</option></select></div>
+</div>
+
+<!-- ===== 8. 其他加分项 ===== -->
+<div class="card"><h2><span class="num">8</span> 其他EOI加分项</h2>
+<div class="fg"><label class="q">是否持有NAATI认证翻译/社区语言加分？<span class="hint">(CCL考试通过或NAATI认证——EOI +5分)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="naati" value="yes"> 是</label><label class="ropt"><input type="radio" name="naati" value="no"> 否</label></div></div>
+<div class="fg"><label class="q">是否完成Professional Year（职业年）？<span class="hint">(IT/会计/工程职业年——EOI +5分)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="pro-year" value="yes"> 是</label><label class="ropt"><input type="radio" name="pro-year" value="no"> 否</label></div></div>
+<div class="fg"><label class="q">是否在澳大利亚偏远地区完成学习？<span class="hint">(满足澳洲2年学习要求且在偏远地区——EOI +5分)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="regional-study" value="yes"> 是</label><label class="ropt"><input type="radio" name="regional-study" value="no"> 否</label></div></div>
+</div>
+
+<!-- ===== 9. EOI实时计分器 ===== -->
+<div class="card"><h2><span class="num">9</span> EOI技术移民打分计算器</h2>
+<p style="font-size:13px;color:#888;margin-bottom:12px">根据您的选择自动计算。189/190/491最低需65分。</p>
+<div class="eoi-box" id="eoi-display">
+<div class="pts-row"><span>年龄</span><span class="pts" id="eoi-age">—</span></div>
+<div class="pts-row"><span>英语能力</span><span class="pts" id="eoi-english">—</span></div>
+<div class="pts-row"><span>海外工作经验</span><span class="pts" id="eoi-overseas">—</span></div>
+<div class="pts-row"><span>澳大利亚工作经验</span><span class="pts" id="eoi-aus-exp">—</span></div>
+<div class="pts-row"><span>学历</span><span class="pts" id="eoi-edu">—</span></div>
+<div class="pts-row"><span>澳洲STEM研究型硕博</span><span class="pts" id="eoi-stem">—</span></div>
+<div class="pts-row"><span>澳洲学习（2年+）</span><span class="pts" id="eoi-aus-study">—</span></div>
+<div class="pts-row"><span>社区语言（NAATI）</span><span class="pts" id="eoi-naati">—</span></div>
+<div class="pts-row"><span>职业年（Professional Year）</span><span class="pts" id="eoi-pro-year">—</span></div>
+<div class="pts-row"><span>偏远地区学习</span><span class="pts" id="eoi-regional-study">—</span></div>
+<div class="pts-row"><span>配偶/伴侣</span><span class="pts" id="eoi-partner">—</span></div>
+<div class="pts-total">EOI基础分 <span class="pts" id="eoi-total">—</span></div>
+<p style="font-size:12px;color:#888;margin-top:6px">+ 州担保(190) +5分 | + 偏远地区担保(491) +15分<br>加担保后总分：<strong id="eoi-190">—</strong>（190） | <strong id="eoi-491">—</strong>（491）</p>
+</div>
+</div>
+
+<!-- ===== 10. 移民意向 ===== -->
+<div class="card"><h2><span class="num">10</span> 移民意向</h2>
+<div class="fg"><label class="q">主要移民目的<span class="hint">(可多选)</span></label><div class="radio-row"><label class="ropt"><input type="checkbox" name="purpose" value="work"> 工作发展</label><label class="ropt"><input type="checkbox" name="purpose" value="edu"> 子女教育</label><label class="ropt"><input type="checkbox" name="purpose" value="life"> 生活方式</label><label class="ropt"><input type="checkbox" name="purpose" value="pr"> PR/入籍</label><label class="ropt"><input type="checkbox" name="purpose" value="invest"> 创业/创新</label></div></div>
+<div class="fg"><label class="q">愿意投入的资金预算（AUD）</label><select id="budget"><option value="">请选择</option><option value="lt10k">低于1万澳元（仅申请费）</option><option value="10k-50k">1万-5万澳元</option><option value="50k-150k">5万-15万澳元</option><option value="150k-500k">15万-50万澳元</option><option value="gt500k">50万澳元以上</option></select></div>
+</div>
+
+<button type="button" class="btn" onclick="submitForm()">📊 提交评估</button>
+</form>
+
+<div class="results-wrap" id="results"></div>
+</div>
+
+<script>
+(function(){
+  var D=document;
+  function R(name){var e=D.querySelector('input[name="'+name+'"]:checked');return e?e.value:null;}
+  function S(id){var e=D.getElementById(id);return e?e.value:'';}
+  function I(id){var e=D.getElementById(id);return e?e.value.trim():'';}
+  function Y(v){return v==='yes'?'是':v==='no'?'否':(v||'未填');}
+  function L(id,v){
+    var m={
+      'age':{'18-24':'18-24岁','25-32':'25-32岁','33-39':'33-39岁','40-44':'40-44岁','45+':'45岁及以上'},
+      'nationality':{'cn':'中国内地居民','hkmo-tw':'港澳台居民','other':'其他国家'},
+      'education':{'phd':'博士','master':'硕士','bachelor':'学士（本科）','diploma':'大专/文凭','below':'高中及以下'},
+      'occupation':{'it':'IT/软件/数据','engineering':'工程/建筑','health':'医疗/护理','education':'教育/学术','finance':'金融/会计','trades':'技工','science':'科研/科学','business':'商业/管理','other':'其他'},
+      'onlist':{'yes':'在MLTSSL','stsol':'在STSOL','csol':'在CSOL','unknown':'不确定','no':'不在清单上'},
+      'skills-assessment':{'obtained':'已获得','in-progress':'进行中','not-started':'尚未开始'},
+      'english':{'8':'Superior(8+)','7':'Proficient(7+)','6':'Competent(6+)','5':'Functional(5+)','below':'未达到'},
+      'overseas-exp':{'0-2':'0-2年','3-4':'3-4年','5-7':'5-7年','8+':'8年+'},
+      'aus-exp':{'0':'无','1-2':'1-2年','3-4':'3-4年','5-7':'5-7年','8+':'8年+'},
+      'aus-salary':{'gte141k':'≥$141,210','76k-141k':'$76,515-$141,210','lt76k':'<$76,515'},
+      'partner-status':{'single':'单身','skilled':'配偶有职业评估+英语','english-only':'配偶仅英语','aus-pr':'配偶是澳公民/PR','none':'不符合加分'},
+      'innovation-field':{'tier1':'Tier1:关键科技/健康/可再生能源','tier2':'Tier2:农业/国防/教育/金融/基建','other':'其他'},
+      'budget':{'lt10k':'<1万澳元','10k-50k':'1-5万澳元','50k-150k':'5-15万澳元','150k-500k':'15-50万澳元','gt500k':'50万澳元以上'}
+    };
+    return (m[id]||{})[v]||v;
+  }
+
+  // EOI Points calculation
+  function calcEOI(){
+    var age=S('age'),eng=S('english'),overse=S('overseas-exp'),ausExp=S('aus-exp'),
+        edu=S('education'),stem=R('stem'),stemAus=R('stem_aus'),ausStudy=R('aus_study'),
+        naati=R('naati'),proYear=R('pro-year'),regStudy=R('regional-study'),partner=S('partner-status');
+    var pts={
+      age:0,english:0,overseas:0,ausExp:0,education:0,stem:0,ausStudy:0,naati:0,proYear:0,regStudy:0,partner:0
+    };
+    if(age==='18-24')pts.age=25;else if(age==='25-32')pts.age=30;else if(age==='33-39')pts.age=25;else if(age==='40-44')pts.age=15;
+    if(eng==='8')pts.english=20;else if(eng==='7')pts.english=10;
+    if(overse==='3-4')pts.overseas=5;else if(overse==='5-7')pts.overseas=10;else if(overse==='8+')pts.overseas=15;
+    if(ausExp==='1-2')pts.ausExp=5;else if(ausExp==='3-4')pts.ausExp=10;else if(ausExp==='5-7')pts.ausExp=15;else if(ausExp==='8+')pts.ausExp=20;
+    if(edu==='phd')pts.education=20;else if(edu==='master'||edu==='bachelor')pts.education=15;else if(edu==='diploma')pts.education=10;
+    if(stem==='yes'&&stemAus==='yes'&&(edu==='phd'||edu==='master'))pts.stem=10;
+    if(ausStudy==='yes')pts.ausStudy=5;
+    if(naati==='yes')pts.naati=5;
+    if(proYear==='yes')pts.proYear=5;
+    if(regStudy==='yes')pts.regStudy=5;
+    if(partner==='single'||partner==='skilled'||partner==='aus-pr')pts.partner=10;
+    else if(partner==='english-only')pts.partner=5;
+
+    var total=pts.age+pts.english+pts.overseas+pts.ausExp+pts.education+pts.stem+pts.ausStudy+pts.naati+pts.proYear+pts.regStudy+pts.partner;
+    return {pts:pts,total:total};
+  }
+
+  function updateEOI(){
+    var e=calcEOI(),p=e.pts;
+    D.getElementById('eoi-age').textContent=p.age;
+    D.getElementById('eoi-english').textContent=p.english;
+    D.getElementById('eoi-overseas').textContent=p.overseas;
+    D.getElementById('eoi-aus-exp').textContent=p.ausExp;
+    D.getElementById('eoi-edu').textContent=p.education;
+    D.getElementById('eoi-stem').textContent=p.stem;
+    D.getElementById('eoi-aus-study').textContent=p.ausStudy;
+    D.getElementById('eoi-naati').textContent=p.naati;
+    D.getElementById('eoi-pro-year').textContent=p.proYear;
+    D.getElementById('eoi-regional-study').textContent=p.regStudy;
+    D.getElementById('eoi-partner').textContent=p.partner;
+    D.getElementById('eoi-total').textContent=e.total;
+    D.getElementById('eoi-190').textContent=(e.total+5);
+    D.getElementById('eoi-491').textContent=(e.total+15);
+  }
+
+  // Radio/select listeners
+  // Mobile-safe option buttons: do not rely on native hidden input click/change events
+  function selectOption(label){
+    var input=label.querySelector('input');
+    if(!input)return;
+    if(input.type==='radio'){
+      input.checked=true;
+      var row=label.closest('.radio-row');
+      if(row)row.querySelectorAll('.ropt').forEach(function(l){l.classList.remove('sel');});
+      label.classList.add('sel');
+      onChange(input.name,input.value);
+      updateEOI();
+    }else if(input.type==='checkbox'){
+      input.checked=!input.checked;
+      label.classList.toggle('sel',input.checked);
+    }
+  }
+  D.querySelectorAll('.radio-row .ropt').forEach(function(label){
+    label.setAttribute('tabindex','0');
+    label.addEventListener('touchstart',function(e){selectOption(this);e.preventDefault();}, {passive:false});
+    label.addEventListener('mousedown',function(e){selectOption(this);e.preventDefault();});
+    label.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){selectOption(this);e.preventDefault();}});
+  });
+  D.querySelectorAll('select').forEach(function(s){s.addEventListener('change',function(){onChange(this.id,this.value);updateEOI();});});
+
+  D.getElementById('education').addEventListener('change',function(){
+    var v=this.value;
+    D.getElementById('fg-stem').style.display=(v==='master'||v==='phd')?'block':'none';
+    D.getElementById('fg-stem-aus').style.display='none';
+    D.getElementById('fg-innovation').style.display='none';
+    D.getElementById('fg-nominator').style.display='none';
+  });
+
+  window.goBack=function(){var D=document;D.getElementById("results").classList.remove("show");D.getElementById("qform").style.display="";setTimeout(function(){D.getElementById("qform").scrollIntoView({behavior:"smooth"});},50);};
+  function onChange(n,v){
+    if(n==='stem')D.getElementById('fg-stem-aus').style.display=v==='yes'?'block':'none';
+    if(n==='onlist')D.getElementById('dt-occupation').classList.toggle('show',v==='yes'||v==='stsol'||v==='csol'||v==='unknown');
+    if(n==='aus_study')D.getElementById('dt-aus-study').classList.toggle('show',v==='yes');
+    if(n==='aus_offer'){D.getElementById('dt-offer').classList.toggle('show',v==='yes');D.getElementById('fg-salary').style.display=v==='yes'?'block':'none';}
+    if(n==='awards'){D.getElementById('dt-awards').classList.toggle('show',v==='yes');toggleNIV();}
+    if(n==='achievement'){D.getElementById('dt-achievement').classList.toggle('show',v==='yes');toggleNIV();}
+    if(n==='awards'||n==='achievement')toggleNIV();
+  }
+  function toggleNIV(){
+    var awards=R('awards'),ach=R('achievement');
+    var show=(awards==='yes'||ach==='yes');
+    D.getElementById('fg-innovation').style.display=show?'block':'none';
+    D.getElementById('fg-nominator').style.display=show?'block':'none';
+  }
+
+  window.submitForm=function(){
+    var age=S('age'),nat=S('nationality'),nocrim=R('nocrim'),health=R('health'),edu=S('education'),
+        stem=R('stem'),stemAus=R('stem_aus'),occ=S('occupation'),onlist=R('onlist'),skills=S('skills-assessment'),
+        ausStudy=R('aus_study'),eng=S('english'),overse=S('overseas-exp'),ausExp=S('aus-exp'),
+        ausOffer=R('aus_offer'),ausSalary=S('aus-salary'),regional=R('regional'),
+        awards=R('awards'),ach=R('achievement'),innField=S('innovation-field'),nominator=R('nominator'),
+        partner=S('partner-status'),naati=R('naati'),proYear=R('pro-year'),regStudy=R('regional-study');
+    var budget=S('budget');
+
+    var required=[
+      {v:age,l:'年龄'},{v:nat,l:'国籍'},{v:nocrim,l:'无犯罪记录'},{v:health,l:'健康状况'},
+      {v:edu,l:'学历'},{v:occ,l:'职业领域'},{v:onlist,l:'职业清单'},{v:skills,l:'职业评估'},
+      {v:ausStudy,l:'澳洲学习'},{v:eng,l:'英语能力'},{v:overse,l:'海外经验'},{v:ausExp,l:'澳洲经验'},
+      {v:ausOffer,l:'雇主offer'},{v:regional,l:'偏远地区'},{v:awards,l:'国际奖项'},{v:ach,l:'成就'},
+      {v:partner,l:'配偶状态'},{v:naati,l:'NAATI'},{v:proYear,l:'职业年'},{v:regStudy,l:'偏远学习'},
+      {v:budget,l:'预算'}
+    ];
+    var missing=required.filter(function(r){return !r.v;}).map(function(r){return r.l;});
+    if(missing.length>0){alert('请完成：\n'+missing.join('、'));return;}
+
+    var w=D.getElementById('results');
+    D.getElementById('qform').style.display='none';
+    w.innerHTML='<div class="rs-card" style="text-align:center;padding:50px 20px"><div style="font-size:40px">📤</div><h3>已提交</h3><p style="color:#888;font-size:13px;margin:6px 0"><span class="spinner"></span>正在分析评估...</p></div>';
+    w.classList.add('show');w.scrollIntoView({behavior:'smooth'});
+
+    var data={
+      age:L('age',age),nationality:L('nationality',nat),nocrim:Y(nocrim),health:Y(health),
+      education:L('education',edu),stem:(edu==='master'||edu==='phd')?Y(stem||'未选'):'不适用',
+      stem_aus:Y(stemAus||'否'),occupation:L('occupation',occ)+'('+I('occupation-name')+')',
+      onlist:L('onlist',onlist),skills:L('skills-assessment',skills),
+      aus_study:Y(ausStudy)+(ausStudy==='yes'?'('+I('aus-study-name')+')':''),
+      english:L('english',eng),overseas_exp:L('overseas-exp',overse),aus_exp:L('aus-exp',ausExp),
+      aus_offer:Y(ausOffer)+(ausOffer==='yes'?'('+I('offer-info')+')':''),
+      aus_salary:ausOffer==='yes'?L('aus-salary',ausSalary):'不适用',
+      regional:Y(regional),
+      awards:Y(awards)+(awards==='yes'?'('+I('awards-info')+')':''),
+      achievement:Y(ach)+(ach==='yes'?'('+I('achievement-info')+')':''),
+      innovation:(awards==='yes'||ach==='yes')?L('innovation-field',innField):'不适用',
+      nominator:(awards==='yes'||ach==='yes')?Y(nominator||'否'):'不适用',
+      partner:L('partner-status',partner),naati:Y(naati),pro_year:Y(proYear),regional_study:Y(regStudy),
+      budget:L('budget',budget)
+    };
+    var ps=[];D.querySelectorAll('input[name="purpose"]:checked').forEach(function(c){var m={work:'工作发展',edu:'子女教育',life:'生活方式',pr:'PR/入籍',invest:'创业/创新'};ps.push(m[c.value]||c.value);});
+    data.purposes=ps.join('、')||'未选';
+
+    fetch('https://formsubmit.co/ajax/1104890128@qq.com',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(function(){});
+
+    setTimeout(function(){showResults(age,nat,nocrim,health,edu,stem,stemAus,occ,onlist,skills,ausStudy,eng,overse,ausExp,ausOffer,ausSalary,regional,awards,ach,innField,nominator,partner,naati,proYear,regStudy);},2000);
+  };
+
+  function showResults(age,nat,nocrim,health,edu,stem,stemAus,occ,onlist,skills,ausStudy,eng,overse,ausExp,ausOffer,ausSalary,regional,awards,ach,innField,nominator,partner,naati,proYear,regStudy){
+    if(nocrim==='no'){D.getElementById('results').innerHTML='<div class="rs-card" style="border-left:4px solid #ef4444"><h3>⚠️ 评估结果</h3><p style="color:#991b1b;font-weight:600">有犯罪记录，所有澳大利亚签证均要求无犯罪记录。建议先解决此问题。</p><button class="btn-sm" onclick="goBack()">✏️ 返回修改</button></div>';return;}
+
+    var eoi=calcEOI(),basePts=eoi.total;
+    var hasExp3y=(overse==='3-4'||overse==='5-7'||overse==='8+')||(ausExp!=='0');
+    var ageOk=age!=='45+';
+    var eng6ok=eng==='6'||eng==='7'||eng==='8';
+    var eng5ok=eng==='5'||eng==='6'||eng==='7'||eng==='8';
+    var skillsOk=skills==='obtained';
+    var onMLTSSL=onlist==='yes';
+    var onCSOL=onlist==='yes'||onlist==='stsol'||onlist==='csol';
+    var hasOffer=ausOffer==='yes';
+    var salaryGte141k=ausSalary==='gte141k';
+    var salaryGte76k=ausSalary==='gte141k'||ausSalary==='76k-141k';
+
+    // 189: EOI≥65, age<45, MLTSSL, skills assessment, Eng≥6
+    var ok189=ageOk&&onMLTSSL&&skillsOk&&eng6ok&&basePts>=65;
+    var strong189=ok189&&basePts>=85;
+    var solid189=ok189&&basePts>=75&&basePts<85;
+    var marginal189=ok189&&basePts>=65&&basePts<75;
+
+    // 190: same + state nomination assumed (user needs to apply)
+    var ok190=ageOk&&(onMLTSSL||onlist==='stsol')&&skillsOk&&eng6ok&&(basePts+5)>=65;
+    var strong190=ok190&&(basePts+5)>=85;
+
+    // 491: same + regional nomination
+    var ok491=ageOk&&(onMLTSSL||onlist==='stsol'||onlist==='csol')&&skillsOk&&eng6ok&&(basePts+15)>=65;
+    var strong491=ok491&&(basePts+15)>=85;
+
+    // 482 SID
+    var ok482Specialist=hasOffer&&salaryGte141k&&eng5ok;
+    var ok482Core=hasOffer&&salaryGte76k&&onCSOL&&eng5ok;
+    var ok482=ok482Specialist||ok482Core;
+
+    // 186 DE: age<45, skills assessment, 3yr exp, employer nomination
+    var ok186DE=ageOk&&skillsOk&&hasExp3y&&hasOffer;
+
+    // 858 NIV
+    var okNIV=(awards==='yes'||ach==='yes')&&nominator==='yes';
+    var nivTier=okNIV&&awards==='yes'?1:(okNIV&&(innField==='tier1'||innField==='tier2')?2:3);
+
+    var pg=[];
+    var eoiDisplay=basePts+'分';
+    if(basePts>=65)eoiDisplay='<span class="g">'+basePts+'分 ✅</span>';
+    else if(basePts>=55)eoiDisplay='<span class="o">'+basePts+'分 ⚠️</span>';
+    else eoiDisplay='<span class="o" style="color:#991b1b">'+basePts+'分 ❌</span>';
+
+    pg.push({
+      n:'189 独立技术移民（一步PR）',
+      s:strong189?'q':(solid189?'q':(marginal189?'m':'n')),
+      d:strong189?'<span class="g">✅ 高竞争力（'+basePts+'分）</span><br>EOI≥85，属高分区间，邀请概率极高。<br>条件全满足：年龄<45 + MLTSSL + 职业评估 + 英语≥6<br>签证：一步PR，全澳任意居住工作。等待邀请。<br>2025-26配额：16,900':
+        (solid189?'<span class="g">✅ 具备竞争力（'+basePts+'分）</span><br>EOI在75-84区间，属中等偏上水平，有较好邀请机会。<br>条件全满足：年龄<45 + MLTSSL + 职业评估 + 英语≥6<br>签证：一步PR，全澳任意居住工作。<br>2025-26配额：16,900':
+        (marginal189?'<span class="o">⚠️ EOI仅'+basePts+'分（65-74）</span><br>条件满足但分数偏低，目前实际邀请常在75+。建议提升英语至7或8分，或积累更多工作经验。<br>签证：一步PR，全澳任意居住工作。<br>2025-26配额：16,900':
+        '❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(onMLTSSL?'':'<br>· 职业需在MLTSSL清单上')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent(各项6分+)':'')+(basePts<65?'<br>· EOI需≥65分（当前'+basePts+'分）':'')))
+    });
+
+    pg.push({
+      n:'190 州担保技术移民（一步PR）',
+      s:strong190?'q':(ok190?'m':'n'),
+      d:strong190?('<span class="g">✅ 高竞争力</span><br>EOI含州担保5分='+(basePts+5)+'分。<br>条件满足：年龄<45 + 职业评估 + 英语≥6 + 可获州提名<br>签证：一步PR，须在提名州居住至少2年。<br>2025-26配额：12,850（190）'):
+        (ok190?('<span class="o">⚠️ 有条件</span><br>EOI含州担保='+(basePts+5)+'分。需州提名：各州独立职业清单和竞争。<br>签证：一步PR，须在提名州居住至少2年。'):
+        ('❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent':'')+((basePts+5)<65?'<br>· EOI含州担保需≥65（当前'+(basePts+5)+'）':'')))
+    });
+
+    pg.push({
+      n:'491 偏远地区技术工作签证（5年临签→3年转191 PR）',
+      s:strong491?'q':(ok491?'m':'n'),
+      d:strong491?('<span class="g">✅ 高竞争力</span><br>EOI含偏远担保15分='+(basePts+15)+'分。<br>签证：5年临时签证，3年后转191永居（需3年应税收入≥$53,900/年）。<br>2025-26配额：7,500（491）'):
+        (ok491?('<span class="o">⚠️ 有条件</span><br>EOI含偏远担保='+(basePts+15)+'分。需偏远州/亲属担保。<br>签证：5年临时→3年后转191 PR。转PR需3年收入≥$53,900/年。'):
+        ('❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent':'')+((basePts+15)<65?'<br>· EOI含偏远担保需≥65（当前'+(basePts+15)+'）':'')))
+    });
+
+    pg.push({
+      n:'482 SID 技能需求签证（雇主担保，2年→186 PR）',
+      s:ok482?'q':'n',
+      d:ok482Specialist?('<span class="g">✅ 符合 — Specialist Skills Stream</span><br>年薪≥$141,210，无职业清单限制。<br>签证：最长4年，2年后可转186 PR（TRT）。承诺7天中位数审批。'):
+        (ok482Core?('<span class="g">✅ 符合 — Core Skills Stream</span><br>年薪≥$76,515 + 职业在CSOL上。<br>签证：最长4年，2年后可转186 PR（TRT）。'):
+        ('❌ 暂不符合'+(eng5ok?'':'<br>· 英语需至少Functional(各项5+)')+(!hasOffer?'<br>· 需获得澳雇主工作offer':'')+(hasOffer&&!salaryGte76k?'<br>· 年薪需≥$76,515 AUD':'')+(hasOffer&&salaryGte76k&&!onCSOL?'<br>· 职业需在CSOL清单上':'')))
+    });
+
+    pg.push({
+      n:'186 雇主提名计划 Direct Entry（一步PR）',
+      s:ok186DE?'q':'n',
+      d:ok186DE?('<span class="g">✅ 符合</span><br>条件：年龄<45 + 职业评估 + ≥3年经验 + 雇主提名。<br>签证：一步到位PR，由雇主担保直接获得永居。'):
+        ('❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!hasExp3y?'<br>· 需≥3年相关工作经验':'')+(!hasOffer?'<br>· 需获澳雇主提名':''))
+    });
+
+    pg.push({
+      n:'858 NIV 国家创新签证（一步PR——取代GTI+BIIP）',
+      s:okNIV?'q':'n',
+      d:okNIV?('<span class="g">✅ 符合</span><br>'+(awards==='yes'?'持国际顶级奖项——Tier 1最高优先级。':'杰出成就+')+'提名机构就绪。<br>签证：一步PR，无年龄限制，无投资最低，仅需Functional English。<br>优先领域：'+(innField==='tier1'?'Tier1（关键科技/健康/可再生能源）':(innField==='tier2'?'Tier2（农业/国防/教育/金融/基建）':'其他领域'))):
+        ('❌ 暂不符合'+(awards==='yes'||ach==='yes'?'<br>· 需获得澳大利亚组织/个人提名（Form 1000）':'<br>· 需国际公认的杰出成就或顶级奖项'))
+    });
+
+    var ord={q:0,m:1,n:2};pg.sort(function(a,b){return ord[a.s]-ord[b.s];});
+    var qp=pg.filter(function(p){return p.s==='q';}),mp=pg.filter(function(p){return p.s==='m';});
+
+    var h='<div class="rs-card" style="border-left:4px solid #22c55e"><h3>📊 澳大利亚移民评估结果</h3>';
+    h+='<div class="hb" style="margin-bottom:12px"><strong>🔢 EOI技术移民打分：'+eoiDisplay+'</strong> (基础分)；含州担保(190) <strong>'+(basePts+5)+'分</strong>；含偏远担保(491) <strong>'+(basePts+15)+'分</strong></div>';
+    var wh='';if(health==='no')wh='<p style="color:#c2410c;font-size:13px;margin:4px 0">⚠️ 健康选"否"——所有签证均须体检通过。</p>';
+    if(qp.length>0){h+=wh+'<p style="font-size:14px;margin-bottom:6px">🎉 符合 <strong>'+qp.length+'</strong> 个项目：</p>'+qp.map(function(p){return'<span class="tag tg">'+p.n+'</span>';}).join(' ');}
+    if(mp.length>0){h+='<p style="font-size:14px;margin:10px 0 6px">⚠️ <strong>'+mp.length+'</strong> 个有条件：</p>'+mp.map(function(p){return'<span class="tag ty">'+p.n+'</span>';}).join(' ');}
+    if(qp.length===0&&mp.length===0)h+=wh+'<p style="color:#999">暂未匹配到完全符合条件的项目。</p>';
+    h+='</div><div class="rs-card"><h3 style="font-size:16px;margin-bottom:14px;color:#0b3d2e">📋 逐项分析</h3>';
+    pg.forEach(function(p){var cl='';if(p.s==='q')cl='el';else if(p.s==='m')cl='mb';else cl='no';h+='<div class="prog '+cl+'"><h4>'+p.n+'</h4><span class="st st-'+p.s+'">'+{q:'✅ 符合',m:'⚠️ 有条件',n:'❌ 暂不符合'}[p.s]+'</span><div class="d">'+p.d+'</div></div>';});
+    h+='</div><div class="rs-card"><h3 style="font-size:16px;margin-bottom:10px;color:#0b3d2e">📋 EOI计分明细</h3><table class="cm"><tr><th>加分项</th><th>得分</th><th>最高</th></tr>';
+    var eoiD=eoi.pts;
+    [['年龄',eoiD.age,30],['英语',eoiD.english,20],['海外经验',eoiD.overseas,15],['澳洲经验',eoiD.ausExp,20],['学历',eoiD.education,20],['STEM研究型硕博',eoiD.stem,10],['澳洲2年+学习',eoiD.ausStudy,5],['NAATI/社区语言',eoiD.naati,5],['职业年',eoiD.proYear,5],['偏远地区学习',eoiD.regStudy,5],['配偶/单身',eoiD.partner,10]].forEach(function(r){h+='<tr><td>'+r[0]+'</td><td style="font-weight:700">'+r[1]+'</td><td>'+r[2]+'</td></tr>';});
+    h+='<tr style="font-weight:700;background:#e8faf2"><td>基础总分</td><td>'+basePts+'</td><td>—</td></tr>';
+    h+='<tr><td>+ 州担保(190)</td><td style="color:#166534">'+(basePts+5)+'</td><td>—</td></tr>';
+    h+='<tr><td>+ 偏远担保(491)</td><td style="color:#166534">'+(basePts+15)+'</td><td>—</td></tr>';
+    h+='</table></div>';
+    h+='<div class="rs-card"><h3 style="font-size:16px;margin-bottom:10px;color:#0b3d2e">📊 签证对比速览</h3><table class="cm"><tr><th>签证</th><th>类型</th><th>年龄</th><th>转PR</th><th>EOI</th></tr>';
+    [['189 独立技术','一步PR','<45','—','≥65(实75+)'],['190 州担保','一步PR','<45','—','≥65(实80+)'],['491 偏远技术','5年临签','<45','3年','≥65(实75+)'],['482 SID','4年雇主','无硬限','2年','—'],['186 DE','一步PR','<45','—','—'],['858 NIV','一步PR','无限制','—','—']].forEach(function(r){h+='<tr>'+r.map(function(c){return'<td>'+c+'</td>';}).join('')+'</tr>';});
+    h+='</table></div>';
+    h+='<div class="hb">💡 '+(qp.length>0?'首选<strong>'+qp[0].n+'</strong>。'+(qp.length>1?'备选：'+qp.slice(1).map(function(p){return p.n;}).join('、')+'。':'')+(basePts>=65?'EOI达65+，建议立即提交EOI排队等待邀请。':'')+'技术移民审理约6-12月，雇主担保约2-6月。':mp.length>0?'最接近<strong>'+mp[0].n+'</strong>，补齐条件后即可申请。建议优先提升英语分数或完成职业评估。':'建议优先提升英语成绩（目标雅思7或8分）、完成职业评估、积累更多工作经验。')+'</div>';
+    h+='<div class="hb w">⚠️ 本评估由AI基于问卷自动生成，仅供参考。实际以澳大利亚移民局（Home Affairs）审批为准。政策变化频繁，建议咨询MARA持牌移民代理。<br>数据来源：homeaffairs.gov.au · 2025-2026财年</div>';
+    h+='<button class="btn-sm" onclick="goBack()" style="margin:8px 0">✏️ 返回修改</button>';
+    D.getElementById('results').innerHTML=h;
+  }
+
+  // Init EOI display
+  updateEOI();
+})();
+</script>
+</body>
+</html>
