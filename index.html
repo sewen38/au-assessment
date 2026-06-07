@@ -95,6 +95,7 @@ table.cm td:first-child{text-align:left;font-weight:500}
 .flow-primary:active{transform:scale(.97)}
 .flow-secondary{background:#eef1f5;color:#555;border:none;border-radius:10px;padding:12px 28px;font-size:14px;cursor:pointer}
 @media(max-width:400px){.radio-row .ropt{min-width:60px;padding:8px 12px;font-size:13px}.card{padding:18px 14px;margin:10px 8px}.header h1{font-size:19px}}
+.project-check-grid{display:flex;flex-direction:column;gap:8px;margin:10px 0}.project-check{display:flex;align-items:flex-start;gap:8px;padding:12px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fafafa;cursor:pointer;font-size:13px;line-height:1.5;transition:all .15s}.project-check:has(input:checked){border-color:#22c55e;background:#f0fdf4}.project-check input[type=checkbox]{margin-top:2px;accent-color:#22c55e;width:16px;height:16px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -299,54 +300,28 @@ table.cm td:first-child{text-align:left;font-weight:500}
   });
 
   // Navigation functions
-  window.goBack=function(){var D=document;D.getElementById("results").classList.remove("show");D.getElementById("qform").style.display="";setTimeout(function(){D.getElementById("qform").scrollIntoView({behavior:"smooth"});},50);};
-window.goPrevStage=function(){var u=new URL(window.location.href);var ret=u.searchParams.get('return')||'';var batch=u.searchParams.get('batch')||'';var issue=u.searchParams.get('issue')||'';if(batch==='1'&&issue){var base=ret||'https://sewen38.github.io/family-plan/';var sep=base.indexOf('?')>=0?'&':'?';window.location.href=base+sep+'batch=1&issue='+issue;}else if(ret){window.location.href=ret;}else{history.back();}};
-window._selectedSolution='';window._selectedProject='';
-window.selectSolution=function(c){document.querySelectorAll('.choice-card').forEach(function(x){x.classList.remove('sel')});var el=document.querySelector('[data-solution="'+c+'"]');if(el)el.classList.add('sel');document.querySelectorAll('.project-list').forEach(function(x){x.classList.remove('show')});var list=document.getElementById('projects-'+c);if(list)list.classList.add('show');window._selectedSolution=c;};
-window.selectProject=function(el,p){document.querySelectorAll('.project-opt').forEach(function(x){x.classList.remove('sel')});el.classList.add('sel');window._selectedProject=p;};
-window.goExecPlan=function(){if(!window._selectedProject){alert('请先选择项目');return;}var u=new URL(window.location.href);var batch=u.searchParams.get('batch')||'';var issue=u.searchParams.get('issue')||'16';if(batch==='1'&&issue){window.location.href='https://sewen38.github.io/family-plan/batch-summary.html?issue='+issue+'&country=AU';return;}window.location.href=execPageUrl+'?issue='+issue+'&solution='+(window._selectedSolution||'A')+'&project='+window._selectedProject;};
+  window.goBack=function(){var D=document;D.getElementById("results").classList.remove("show");D.getElementById("qform").style.display="";setTimeout(function(){D.getElementById("qform").scrollIntoView({behavior:"smooth"});},50);};window.goPrevStage=function(){
+  var u=new URL(window.location.href);
+  var ret=u.searchParams.get('return')||'';
+  if(ret){window.location.href=ret;return;}
+  window.location.href='https://sewen38.github.io/family-plan/?issue='+(u.searchParams.get('issue')||'');
+};
+window.onProjectCheck=function(){};window.onProjectCheck=function(){};
+window.goExecPlan=function(){
+  var checks=document.querySelectorAll('input[name="selProject"]:checked');
+  if(checks.length===0){alert('请至少选择一个通过评估的项目');return;}
+  var projects=Array.from(checks).map(function(c){return c.value;});
+  var u=new URL(window.location.href);
+  var batch=u.searchParams.get('batch')||'';
+  var issue=u.searchParams.get('issue')||'';
+  if(batch==='1'&&issue){
+    try{var bd=JSON.parse(localStorage.getItem('***')||'{}');bd[issue]=bd[issue]||{};bd[issue]['au']={projects:projects,ts:Date.now()};localStorage.setItem('***',JSON.stringify(bd));}catch(e){}
+    var retUrl=u.searchParams.get('return')||'https://sewen38.github.io/family-plan/?batch=1&issue='+issue;
+    window.location.href=retUrl;return;
+  }
+  window.location.href='https://sewen38.github.io/au-assessment/exec.html?issue='+issue+'&projects='+projects.join(',');
+};
 var execPageUrl='https://sewen38.github.io/au-assessment/exec.html';
-
-  window.goPrevStage=function(){
-    var u=new URL(window.location.href);var ret=u.searchParams.get('return')||'';
-    var batch=u.searchParams.get('batch')||'';
-    var issue=u.searchParams.get('issue')||'';
-    if(batch==='1'&&issue){
-      var base=ret||'https://sewen38.github.io/family-plan/';
-      var sep=base.indexOf('?')>=0?'&':'?';
-      window.location.href=base+sep+'batch=1&issue='+issue;
-    }else if(ret){
-      window.location.href=ret;
-    }else{
-      history.length>1?history.back():goBack();
-    }
-  };
-  window._selectedSolution=null;
-  window._selectedProject=null;
-  window.selectSolution=function(code){
-    document.querySelectorAll('.choice-card').forEach(function(x){x.classList.remove('sel');});
-    var el=document.querySelector('[data-solution="'+code+'"]'); if(el)el.classList.add('sel');
-    document.querySelectorAll('.project-list').forEach(function(x){x.classList.remove('show');});
-    var list=document.getElementById('projects-'+code); if(list)list.classList.add('show');
-    window._selectedSolution=code;
-  };
-  window.selectProject=function(el,project){
-    document.querySelectorAll('.project-opt').forEach(function(x){x.classList.remove('sel');});
-    el.classList.add('sel'); window._selectedProject=project;
-  };
-  window.goExecPlan=function(){
-    if(!window._selectedSolution){alert('请先选择一个可执行/可选方案');return;}
-    if(!window._selectedProject){alert('请先选择具体项目');return;}
-    var u=new URL(window.location.href);
-    var batch=u.searchParams.get('batch')||'';
-    var issue=u.searchParams.get('issue')||'';
-    if(batch==='1'&&issue){
-      window.location.href='https://sewen38.github.io/family-plan/batch-summary.html?issue='+issue+'&country=AU';
-      return;
-    }
-    var params=new URLSearchParams({issue:issue,country:'au',solution:window._selectedSolution,project:window._selectedProject,stage:'exec'});
-    window.location.href='https://sewen38.github.io/au-assessment/exec.html?'+params.toString();
-  };
 
   function onChange(n,v){
     if(n==='stem')D.getElementById('fg-stem-aus').style.display=v==='yes'?'block':'none';
@@ -517,15 +492,20 @@ var execPageUrl='https://sewen38.github.io/au-assessment/exec.html';
 
     // === SOLUTION / PROJECT SELECTION ===
     h+='<div class="rs-card"><h3 style="font-size:16px;margin-bottom:12px;color:#0b3d2e">✅ 请选择下一阶段执行方案</h3>';
-    h+='<div class="choice-grid">';
-    h+='<div class="choice-card" data-solution="A" onclick="selectSolution(\'A\')"><h4>方案A：189/190 技术移民（评分制PR）</h4><p>适合EOI分数较高(≥75)、职业在MLTSSL/STSOL、可独立/州担保申请的客户。一步PR，全澳生活工作。</p></div>';
-    h+='<div class="choice-card" data-solution="B" onclick="selectSolution(\'B\')"><h4>方案B：491/482 雇主+偏远地区路径</h4><p>适合分数不够但有澳洲雇主offer或接受偏远地区的客户。先工作积累经验再转PR，灵活性强。</p></div>';
-    h+='<div class="choice-card" data-solution="C" onclick="selectSolution(\'C\')"><h4>方案C：186/NIV 雇主永居+创新签证</h4><p>适合有稳定雇主可提名或具杰出成就的客户。一步到位PR，无EOI排队风险。</p></div>';
+        h+='<div class="rs-card"><h3 style="font-size:16px;margin-bottom:12px;color:#8b1e1e">✅ 通过评估的项目（可多选）</h3>';
+    h+='<div class="project-check-grid">';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-189-skilled" onchange="onProjectCheck()"> 189 独立技术移民 · EOI评分制 · 一步PR · 全澳自由</label>';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-190-state" onchange="onProjectCheck()"> 190 州担保技术移民 · 州提名+5分 · 一步PR · 需州居住2年</label>';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-189-edu" onchange="onProjectCheck()"> 189/190 技术移民 + 子女教育规划</label>';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-491-regional" onchange="onProjectCheck()"> 491 偏远地区工作签证 · 5年临签→3年转191 PR</label>';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-482-sid" onchange="onProjectCheck()"> 482 SID 雇主担保 · Specialist/Core流 · 2年后转186 PR</label>';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-491-482-combo" onchange="onProjectCheck()"> 491+482 组合规划 · 多路径保障</label>';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-186-de" onchange="onProjectCheck()"> 186 Direct Entry 雇主提名永居 · 一步PR · 需雇主担保</label>';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-858-niv" onchange="onProjectCheck()"> 858 NIV 国家创新签证 · 一步PR · 杰出成就路径</label>';
+    h+='<label class="project-check"><input type="checkbox" name="selProject" value="au-186-niv" onchange="onProjectCheck()"> 186 DE + 858 NIV 双轨评估</label>';
     h+='</div>';
-    h+='<div id="projects-A" class="project-list"><div class="stage-hint">请选择项目：</div><div class="project-opt" onclick="selectProject(this,\'au-189-skilled\')">189 独立技术移民 · EOI评分制 · 一步PR · 全澳自由</div><div class="project-opt" onclick="selectProject(this,\'au-190-state\')">190 州担保技术移民 · 州提名+5分 · 一步PR · 需州居住2年</div><div class="project-opt" onclick="selectProject(this,\'au-189-edu\')">189/190 技术移民 + 子女教育规划</div></div>';
-    h+='<div id="projects-B" class="project-list"><div class="stage-hint">请选择项目：</div><div class="project-opt" onclick="selectProject(this,\'au-491-regional\')">491 偏远地区工作签证 · 5年临签→3年转191 PR</div><div class="project-opt" onclick="selectProject(this,\'au-482-sid\')">482 SID 雇主担保 · Specialist/Core流 · 2年后转186 PR</div><div class="project-opt" onclick="selectProject(this,\'au-491-482-combo\')">491+482 组合规划 · 多路径保障</div></div>';
-    h+='<div id="projects-C" class="project-list"><div class="stage-hint">请选择项目：</div><div class="project-opt" onclick="selectProject(this,\'au-186-de\')">186 Direct Entry 雇主提名永居 · 一步PR · 需雇主担保</div><div class="project-opt" onclick="selectProject(this,\'au-858-niv\')">858 NIV 国家创新签证 · 一步PR · 杰出成就路径</div><div class="project-opt" onclick="selectProject(this,\'au-186-niv\')">186 DE + 858 NIV 双轨评估</div></div>';
     h+='<div class="flow-actions"><button class="flow-secondary" onclick="goPrevStage()">返回上一阶段</button><button class="flow-secondary" onclick="goBack()">返回修改问卷</button><button class="flow-primary" onclick="goExecPlan()">下一阶段</button></div>';
+    h+='</div>';
     h+='</div>';
 
     D.getElementById('results').innerHTML=h;
