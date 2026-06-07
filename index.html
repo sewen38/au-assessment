@@ -64,6 +64,21 @@ table.cm td:first-child{text-align:left;font-weight:500}
 .btn-sm{display:inline-block;padding:10px 20px;margin:4px 0;background:#eef1f5;color:#555;border:none;border-radius:8px;font-size:13px;cursor:pointer}
 .spinner{display:inline-block;width:12px;height:12px;border:2px solid #ddd;border-top-color:#1a8a5a;border-radius:50%;animation:spin .8s linear infinite;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+.flow-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.flow-actions button{flex:1;min-width:110px;border:0;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer}
+.flow-primary{background:linear-gradient(135deg,#0b3d2e,#1a8a5a);color:#fff}
+.flow-secondary{background:#eef1f5;color:#555}
+.choice-grid{display:grid;gap:10px}
+.choice-card{border:2px solid #e5e7eb;border-radius:12px;padding:13px;background:#fafafa;cursor:pointer}
+.choice-card.sel{border-color:#1a8a5a;background:#e8faf2}
+.choice-card h4{font-size:15px;color:#0b3d2e;margin-bottom:4px}
+.choice-card p{font-size:12px;color:#666}
+.project-list{display:none;margin-top:12px}
+.project-list.show{display:block}
+.project-opt{border:1.5px solid #e5e7eb;border-radius:10px;padding:11px;margin-bottom:8px;background:#fff;cursor:pointer}
+.project-opt.sel{border-color:#22c55e;background:#f0fdf4}
+.stage-hint{font-size:12px;color:#888;margin-top:6px}
 @media(max-width:400px){.radio-row .ropt{min-width:60px;padding:8px 12px;font-size:13px}.card{padding:18px 14px;margin:10px 8px}.header h1{font-size:19px}}
 </style>
 </head>
@@ -77,7 +92,7 @@ table.cm td:first-child{text-align:left;font-weight:500}
 <div class="card"><h2><span class="num">1</span> 基本信息</h2>
 <div class="fg"><label class="q">年龄</label><select id="age"><option value="">请选择</option><option value="18-24">18-24岁（EOI +25分）</option><option value="25-32">25-32岁（EOI +30分）</option><option value="33-39">33-39岁（EOI +25分）</option><option value="40-44">40-44岁（EOI +15分）</option><option value="45+">45岁及以上（EOI +0分）</option></select></div>
 <div class="fg"><label class="q">国籍/户籍</label><select id="nationality"><option value="">请选择</option><option value="cn">中国内地居民</option><option value="hkmo-tw">港澳台居民</option><option value="other">其他国家</option></select></div>
-<div class="fg"><label class="q">是否有无犯罪记录<span class="hint">(选择“是”表示无犯罪记录；所有签证均要求无犯罪记录)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="nocrim" value="yes"> 是</label><label class="ropt"><input type="radio" name="nocrim" value="no"> 否</label></div></div>
+<div class="fg"><label class="q">是否有无犯罪记录<span class="hint">(选择"是"表示无犯罪记录；所有签证均要求无犯罪记录)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="nocrim" value="yes"> 是</label><label class="ropt"><input type="radio" name="nocrim" value="no"> 否</label></div></div>
 <div class="fg"><label class="q">健康状况是否良好<span class="hint">(所有签证均需体检)</span></label><div class="radio-row"><label class="ropt"><input type="radio" name="health" value="yes"> 是</label><label class="ropt"><input type="radio" name="health" value="no"> 否</label></div></div>
 </div>
 
@@ -236,8 +251,7 @@ table.cm td:first-child{text-align:left;font-weight:500}
     D.getElementById('eoi-491').textContent=(e.total+15);
   }
 
-  // Radio/select listeners
-  // Mobile-safe option buttons: do not rely on native hidden input click/change events
+  // Mobile-safe option buttons
   function selectOption(label){
     var input=label.querySelector('input');
     if(!input)return;
@@ -269,7 +283,33 @@ table.cm td:first-child{text-align:left;font-weight:500}
     D.getElementById('fg-nominator').style.display='none';
   });
 
+  // Navigation functions
   window.goBack=function(){var D=document;D.getElementById("results").classList.remove("show");D.getElementById("qform").style.display="";setTimeout(function(){D.getElementById("qform").scrollIntoView({behavior:"smooth"});},50);};
+  window.goPrevStage=function(){
+    var u=new URL(window.location.href);var ret=u.searchParams.get('return')||'';
+    if(ret){window.location.href=ret;}else{history.length>1?history.back():goBack();}
+  };
+  window._selectedSolution=null;
+  window._selectedProject=null;
+  window.selectSolution=function(code){
+    document.querySelectorAll('.choice-card').forEach(function(x){x.classList.remove('sel');});
+    var el=document.querySelector('[data-solution="'+code+'"]'); if(el)el.classList.add('sel');
+    document.querySelectorAll('.project-list').forEach(function(x){x.classList.remove('show');});
+    var list=document.getElementById('projects-'+code); if(list)list.classList.add('show');
+    window._selectedSolution=code;
+  };
+  window.selectProject=function(el,project){
+    document.querySelectorAll('.project-opt').forEach(function(x){x.classList.remove('sel');});
+    el.classList.add('sel'); window._selectedProject=project;
+  };
+  window.goExecPlan=function(){
+    if(!window._selectedSolution){alert('请先选择一个可执行/可选方案');return;}
+    if(!window._selectedProject){alert('请先选择具体项目');return;}
+    var u=new URL(window.location.href);var issue=u.searchParams.get('issue')||'';
+    var params=new URLSearchParams({issue:issue,country:'au',solution:window._selectedSolution,project:window._selectedProject,stage:'exec'});
+    window.location.href='https://sewen38.github.io/au-assessment/exec.html?'+params.toString();
+  };
+
   function onChange(n,v){
     if(n==='stem')D.getElementById('fg-stem-aus').style.display=v==='yes'?'block':'none';
     if(n==='onlist')D.getElementById('dt-occupation').classList.toggle('show',v==='yes'||v==='stsol'||v==='csol'||v==='unknown');
@@ -337,7 +377,7 @@ table.cm td:first-child{text-align:left;font-weight:500}
   };
 
   function showResults(age,nat,nocrim,health,edu,stem,stemAus,occ,onlist,skills,ausStudy,eng,overse,ausExp,ausOffer,ausSalary,regional,awards,ach,innField,nominator,partner,naati,proYear,regStudy){
-    if(nocrim==='no'){D.getElementById('results').innerHTML='<div class="rs-card" style="border-left:4px solid #ef4444"><h3>⚠️ 评估结果</h3><p style="color:#991b1b;font-weight:600">有犯罪记录，所有澳大利亚签证均要求无犯罪记录。建议先解决此问题。</p><button class="btn-sm" onclick="goBack()">✏️ 返回修改</button></div>';return;}
+    if(nocrim==='no'){D.getElementById('results').innerHTML='<div class="rs-card" style="border-left:4px solid #ef4444"><h3>⚠️ 评估结果</h3><p style="color:#991b1b;font-weight:600">有犯罪记录，所有澳大利亚签证均要求无犯罪记录。建议先解决此问题。</p><div class="flow-actions"><button class="flow-secondary" onclick="goPrevStage()">返回上一阶段</button><button class="flow-secondary" onclick="goBack()">返回修改</button></div></div>';return;}
 
     var eoi=calcEOI(),basePts=eoi.total;
     var hasExp3y=(overse==='3-4'||overse==='5-7'||overse==='8+')||(ausExp!=='0');
@@ -351,31 +391,17 @@ table.cm td:first-child{text-align:left;font-weight:500}
     var salaryGte141k=ausSalary==='gte141k';
     var salaryGte76k=ausSalary==='gte141k'||ausSalary==='76k-141k';
 
-    // 189: EOI≥65, age<45, MLTSSL, skills assessment, Eng≥6
     var ok189=ageOk&&onMLTSSL&&skillsOk&&eng6ok&&basePts>=65;
     var strong189=ok189&&basePts>=85;
     var solid189=ok189&&basePts>=75&&basePts<85;
     var marginal189=ok189&&basePts>=65&&basePts<75;
-
-    // 190: same + state nomination assumed (user needs to apply)
     var ok190=ageOk&&(onMLTSSL||onlist==='stsol')&&skillsOk&&eng6ok&&(basePts+5)>=65;
-    var strong190=ok190&&(basePts+5)>=85;
-
-    // 491: same + regional nomination
     var ok491=ageOk&&(onMLTSSL||onlist==='stsol'||onlist==='csol')&&skillsOk&&eng6ok&&(basePts+15)>=65;
-    var strong491=ok491&&(basePts+15)>=85;
-
-    // 482 SID
     var ok482Specialist=hasOffer&&salaryGte141k&&eng5ok;
     var ok482Core=hasOffer&&salaryGte76k&&onCSOL&&eng5ok;
     var ok482=ok482Specialist||ok482Core;
-
-    // 186 DE: age<45, skills assessment, 3yr exp, employer nomination
     var ok186DE=ageOk&&skillsOk&&hasExp3y&&hasOffer;
-
-    // 858 NIV
     var okNIV=(awards==='yes'||ach==='yes')&&nominator==='yes';
-    var nivTier=okNIV&&awards==='yes'?1:(okNIV&&(innField==='tier1'||innField==='tier2')?2:3);
 
     var pg=[];
     var eoiDisplay=basePts+'分';
@@ -386,48 +412,46 @@ table.cm td:first-child{text-align:left;font-weight:500}
     pg.push({
       n:'189 独立技术移民（一步PR）',
       s:strong189?'q':(solid189?'q':(marginal189?'m':'n')),
-      d:strong189?'<span class="g">✅ 高竞争力（'+basePts+'分）</span><br>EOI≥85，属高分区间，邀请概率极高。<br>条件全满足：年龄<45 + MLTSSL + 职业评估 + 英语≥6<br>签证：一步PR，全澳任意居住工作。等待邀请。<br>2025-26配额：16,900':
-        (solid189?'<span class="g">✅ 具备竞争力（'+basePts+'分）</span><br>EOI在75-84区间，属中等偏上水平，有较好邀请机会。<br>条件全满足：年龄<45 + MLTSSL + 职业评估 + 英语≥6<br>签证：一步PR，全澳任意居住工作。<br>2025-26配额：16,900':
-        (marginal189?'<span class="o">⚠️ EOI仅'+basePts+'分（65-74）</span><br>条件满足但分数偏低，目前实际邀请常在75+。建议提升英语至7或8分，或积累更多工作经验。<br>签证：一步PR，全澳任意居住工作。<br>2025-26配额：16,900':
-        '❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(onMLTSSL?'':'<br>· 职业需在MLTSSL清单上')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent(各项6分+)':'')+(basePts<65?'<br>· EOI需≥65分（当前'+basePts+'分）':'')))
+      d:strong189?'<span class="g">✅ 高竞争力（'+basePts+'分）</span><br>EOI≥85，属高分区间，邀请概率极高。<br>Condition：年龄<45+MLTSSL+职业评估+英语≥6<br>签证：一步PR，全澳任意居住工作。2025-26配额：16,900':
+        (solid189?'<span class="g">✅ 具备竞争力（'+basePts+'分）</span><br>EOI在75-84区间，属中等偏上水平，有较好邀请机会。2025-26配额：16,900':
+        (marginal189?'<span class="o">⚠️ EOI仅'+basePts+'分（65-74）</span><br>条件满足但分数偏低，实际邀请常在75+。建议提升英语至7或8分。':
+        '❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!onMLTSSL?'<br>· 职业需在MLTSSL清单上':'')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent':'')+(basePts<65?'<br>· EOI需≥65分（当前'+basePts+'分）':'')))
     });
 
     pg.push({
       n:'190 州担保技术移民（一步PR）',
-      s:strong190?'q':(ok190?'m':'n'),
-      d:strong190?('<span class="g">✅ 高竞争力</span><br>EOI含州担保5分='+(basePts+5)+'分。<br>条件满足：年龄<45 + 职业评估 + 英语≥6 + 可获州提名<br>签证：一步PR，须在提名州居住至少2年。<br>2025-26配额：12,850（190）'):
-        (ok190?('<span class="o">⚠️ 有条件</span><br>EOI含州担保='+(basePts+5)+'分。需州提名：各州独立职业清单和竞争。<br>签证：一步PR，须在提名州居住至少2年。'):
-        ('❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent':'')+((basePts+5)<65?'<br>· EOI含州担保需≥65（当前'+(basePts+5)+'）':'')))
+      s:ok190?'q':(ageOk&&skillsOk&&eng6ok?'m':'n'),
+      d:ok190?('<span class="g">✅ 符合</span><br>EOI含州担保5分='+(basePts+5)+'分。需州提名：各州独立职业清单。签证：一步PR，须在提名州居住≥2年。'):
+        ('❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent':''))
     });
 
     pg.push({
       n:'491 偏远地区技术工作签证（5年临签→3年转191 PR）',
-      s:strong491?'q':(ok491?'m':'n'),
-      d:strong491?('<span class="g">✅ 高竞争力</span><br>EOI含偏远担保15分='+(basePts+15)+'分。<br>签证：5年临时签证，3年后转191永居（需3年应税收入≥$53,900/年）。<br>2025-26配额：7,500（491）'):
-        (ok491?('<span class="o">⚠️ 有条件</span><br>EOI含偏远担保='+(basePts+15)+'分。需偏远州/亲属担保。<br>签证：5年临时→3年后转191 PR。转PR需3年收入≥$53,900/年。'):
-        ('❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent':'')+((basePts+15)<65?'<br>· EOI含偏远担保需≥65（当前'+(basePts+15)+'）':'')))
+      s:ok491?'q':'n',
+      d:ok491?('<span class="g">✅ 符合</span><br>EOI含偏远担保='+(basePts+15)+'分。签证：5年临时→3年后转191 PR。需3年收入≥$53,900/年。'):
+        '❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!eng6ok?'<br>· 英语需达Competent':'')
     });
 
     pg.push({
       n:'482 SID 技能需求签证（雇主担保，2年→186 PR）',
       s:ok482?'q':'n',
-      d:ok482Specialist?('<span class="g">✅ 符合 — Specialist Skills Stream</span><br>年薪≥$141,210，无职业清单限制。<br>签证：最长4年，2年后可转186 PR（TRT）。承诺7天中位数审批。'):
-        (ok482Core?('<span class="g">✅ 符合 — Core Skills Stream</span><br>年薪≥$76,515 + 职业在CSOL上。<br>签证：最长4年，2年后可转186 PR（TRT）。'):
-        ('❌ 暂不符合'+(eng5ok?'':'<br>· 英语需至少Functional(各项5+)')+(!hasOffer?'<br>· 需获得澳雇主工作offer':'')+(hasOffer&&!salaryGte76k?'<br>· 年薪需≥$76,515 AUD':'')+(hasOffer&&salaryGte76k&&!onCSOL?'<br>· 职业需在CSOL清单上':'')))
+      d:ok482Specialist?('<span class="g">✅ 符合 — Specialist</span><br>年薪≥$141,210，无职业清单限制。2年后可转186 PR。'):
+        (ok482Core?('<span class="g">✅ 符合 — Core</span><br>年薪≥$76,515+CSOL职业。2年后可转186 PR。'):
+        '❌ 暂不符合'+(!hasOffer?'<br>· 需获得澳雇主工作offer':'')+(hasOffer&&!salaryGte76k?'<br>· 年薪需≥$76,515':'')+(hasOffer&&salaryGte76k&&!onCSOL?'<br>· 职业需在CSOL清单上':''))
     });
 
     pg.push({
-      n:'186 雇主提名计划 Direct Entry（一步PR）',
+      n:'186 雇主提名永居 Direct Entry（一步PR）',
       s:ok186DE?'q':'n',
-      d:ok186DE?('<span class="g">✅ 符合</span><br>条件：年龄<45 + 职业评估 + ≥3年经验 + 雇主提名。<br>签证：一步到位PR，由雇主担保直接获得永居。'):
-        ('❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!hasExp3y?'<br>· 需≥3年相关工作经验':'')+(!hasOffer?'<br>· 需获澳雇主提名':''))
+      d:ok186DE?('<span class="g">✅ 符合</span><br>条件：年龄<45+职业评估+≥3年经验+雇主提名。一步到位PR。'):
+        '❌ 暂不符合'+(ageOk?'':'<br>· 年龄需<45岁')+(!skillsOk?'<br>· 需先完成职业评估':'')+(!hasExp3y?'<br>· 需≥3年相关经验':'')+(!hasOffer?'<br>· 需获澳雇主提名':'')
     });
 
     pg.push({
-      n:'858 NIV 国家创新签证（一步PR——取代GTI+BIIP）',
+      n:'858 NIV 国家创新签证（一步PR）',
       s:okNIV?'q':'n',
-      d:okNIV?('<span class="g">✅ 符合</span><br>'+(awards==='yes'?'持国际顶级奖项——Tier 1最高优先级。':'杰出成就+')+'提名机构就绪。<br>签证：一步PR，无年龄限制，无投资最低，仅需Functional English。<br>优先领域：'+(innField==='tier1'?'Tier1（关键科技/健康/可再生能源）':(innField==='tier2'?'Tier2（农业/国防/教育/金融/基建）':'其他领域'))):
-        ('❌ 暂不符合'+(awards==='yes'||ach==='yes'?'<br>· 需获得澳大利亚组织/个人提名（Form 1000）':'<br>· 需国际公认的杰出成就或顶级奖项'))
+      d:okNIV?('<span class="g">✅ 符合</span><br>持国际奖项或杰出成就+提名机构就绪。无年龄限制，一步PR。'):
+        '❌ 暂不符合'+(awards!=='yes'&&ach!=='yes'?'<br>· 需国际公认杰出成就或奖项':'')+(nominator!=='yes'?'<br>· 需澳组织/个人提名':'')
     });
 
     var ord={q:0,m:1,n:2};pg.sort(function(a,b){return ord[a.s]-ord[b.s];});
@@ -438,7 +462,6 @@ table.cm td:first-child{text-align:left;font-weight:500}
     var wh='';if(health==='no')wh='<p style="color:#c2410c;font-size:13px;margin:4px 0">⚠️ 健康选"否"——所有签证均须体检通过。</p>';
     if(qp.length>0){h+=wh+'<p style="font-size:14px;margin-bottom:6px">🎉 符合 <strong>'+qp.length+'</strong> 个项目：</p>'+qp.map(function(p){return'<span class="tag tg">'+p.n+'</span>';}).join(' ');}
     if(mp.length>0){h+='<p style="font-size:14px;margin:10px 0 6px">⚠️ <strong>'+mp.length+'</strong> 个有条件：</p>'+mp.map(function(p){return'<span class="tag ty">'+p.n+'</span>';}).join(' ');}
-    if(qp.length===0&&mp.length===0)h+=wh+'<p style="color:#999">暂未匹配到完全符合条件的项目。</p>';
     h+='</div><div class="rs-card"><h3 style="font-size:16px;margin-bottom:14px;color:#0b3d2e">📋 逐项分析</h3>';
     pg.forEach(function(p){var cl='';if(p.s==='q')cl='el';else if(p.s==='m')cl='mb';else cl='no';h+='<div class="prog '+cl+'"><h4>'+p.n+'</h4><span class="st st-'+p.s+'">'+{q:'✅ 符合',m:'⚠️ 有条件',n:'❌ 暂不符合'}[p.s]+'</span><div class="d">'+p.d+'</div></div>';});
     h+='</div><div class="rs-card"><h3 style="font-size:16px;margin-bottom:10px;color:#0b3d2e">📋 EOI计分明细</h3><table class="cm"><tr><th>加分项</th><th>得分</th><th>最高</th></tr>';
@@ -453,7 +476,20 @@ table.cm td:first-child{text-align:left;font-weight:500}
     h+='</table></div>';
     h+='<div class="hb">💡 '+(qp.length>0?'首选<strong>'+qp[0].n+'</strong>。'+(qp.length>1?'备选：'+qp.slice(1).map(function(p){return p.n;}).join('、')+'。':'')+(basePts>=65?'EOI达65+，建议立即提交EOI排队等待邀请。':'')+'技术移民审理约6-12月，雇主担保约2-6月。':mp.length>0?'最接近<strong>'+mp[0].n+'</strong>，补齐条件后即可申请。建议优先提升英语分数或完成职业评估。':'建议优先提升英语成绩（目标雅思7或8分）、完成职业评估、积累更多工作经验。')+'</div>';
     h+='<div class="hb w">⚠️ 本评估由AI基于问卷自动生成，仅供参考。实际以澳大利亚移民局（Home Affairs）审批为准。政策变化频繁，建议咨询MARA持牌移民代理。<br>数据来源：homeaffairs.gov.au · 2025-2026财年</div>';
-    h+='<button class="btn-sm" onclick="goBack()" style="margin:8px 0">✏️ 返回修改</button>';
+
+    // === SOLUTION / PROJECT SELECTION ===
+    h+='<div class="rs-card"><h3 style="font-size:16px;margin-bottom:12px;color:#0b3d2e">✅ 请选择下一阶段执行方案</h3>';
+    h+='<div class="choice-grid">';
+    h+='<div class="choice-card" data-solution="A" onclick="selectSolution(\'A\')"><h4>方案A：189/190 技术移民（评分制PR）</h4><p>适合EOI分数较高(≥75)、职业在MLTSSL/STSOL、可独立/州担保申请的客户。一步PR，全澳生活工作。</p></div>';
+    h+='<div class="choice-card" data-solution="B" onclick="selectSolution(\'B\')"><h4>方案B：491/482 雇主+偏远地区路径</h4><p>适合分数不够但有澳洲雇主offer或接受偏远地区的客户。先工作积累经验再转PR，灵活性强。</p></div>';
+    h+='<div class="choice-card" data-solution="C" onclick="selectSolution(\'C\')"><h4>方案C：186/NIV 雇主永居+创新签证</h4><p>适合有稳定雇主可提名或具杰出成就的客户。一步到位PR，无EOI排队风险。</p></div>';
+    h+='</div>';
+    h+='<div id="projects-A" class="project-list"><div class="stage-hint">请选择项目：</div><div class="project-opt" onclick="selectProject(this,\'au-189-skilled\')">189 独立技术移民 · EOI评分制 · 一步PR · 全澳自由</div><div class="project-opt" onclick="selectProject(this,\'au-190-state\')">190 州担保技术移民 · 州提名+5分 · 一步PR · 需州居住2年</div><div class="project-opt" onclick="selectProject(this,\'au-189-edu\')">189/190 技术移民 + 子女教育规划</div></div>';
+    h+='<div id="projects-B" class="project-list"><div class="stage-hint">请选择项目：</div><div class="project-opt" onclick="selectProject(this,\'au-491-regional\')">491 偏远地区工作签证 · 5年临签→3年转191 PR</div><div class="project-opt" onclick="selectProject(this,\'au-482-sid\')">482 SID 雇主担保 · Specialist/Core流 · 2年后转186 PR</div><div class="project-opt" onclick="selectProject(this,\'au-491-482-combo\')">491+482 组合规划 · 多路径保障</div></div>';
+    h+='<div id="projects-C" class="project-list"><div class="stage-hint">请选择项目：</div><div class="project-opt" onclick="selectProject(this,\'au-186-de\')">186 Direct Entry 雇主提名永居 · 一步PR · 需雇主担保</div><div class="project-opt" onclick="selectProject(this,\'au-858-niv\')">858 NIV 国家创新签证 · 一步PR · 杰出成就路径</div><div class="project-opt" onclick="selectProject(this,\'au-186-niv\')">186 DE + 858 NIV 双轨评估</div></div>';
+    h+='<div class="flow-actions"><button class="flow-secondary" onclick="goPrevStage()">返回上一阶段</button><button class="flow-secondary" onclick="goBack()">返回修改问卷</button><button class="flow-primary" onclick="goExecPlan()">下一阶段</button></div>';
+    h+='</div>';
+
     D.getElementById('results').innerHTML=h;
   }
 
