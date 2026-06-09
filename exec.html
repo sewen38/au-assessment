@@ -1285,19 +1285,6 @@ NIV（国家创新签证）不要求投资金额，但要求申请人证明其�
 `;
 
 document.getElementById('docView').innerHTML=mdToHtml(md);
-  setTimeout(function(){
-    var h2s=document.getElementById('docView').querySelectorAll('h2,h3');
-    for(var i=0;i<h2s.length;i++){
-      if(h2s[i].textContent.indexOf('6.1')>=0){
-        var img=document.createElement('img');
-        img.src='flow-财富架构.svg';
-        img.alt='澳大利亚财富架构';
-        img.style='width:100%;max-width:800px;border-radius:12px;border:1px solid #e5e7eb;margin:8px 0';
-        h2s[i].parentNode.insertBefore(img,h2s[i]);
-        break;
-      }
-    }
-  },200);
 
 }
 
