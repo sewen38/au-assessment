@@ -7,11 +7,49 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',Arial,sans-serif;background:#f5f6f8;color:#1f2937;line-height:1.65;padding-bottom:32px}.wrap{max-width:760px;margin:0 auto}.hero{background:linear-gradient(135deg,#003300,#006400);color:#fff;padding:30px 18px 24px;text-align:center}.hero h1{font-size:22px;margin-bottom:6px}.hero p{font-size:13px;opacity:.88}.card{background:#fff;border-radius:16px;margin:14px 12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}.card h2{font-size:17px;color:#003300;margin-bottom:10px}.muted{font-size:13px;color:#667085}.pill{display:inline-block;background:#e6f2e6;color:#006400;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;margin:3px}.summary{background:#f0f7f0;border-left:4px solid #f5a623;border-radius:10px;padding:12px;margin:10px 0;font-size:13px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btn{flex:1;min-width:130px;border:0;border-radius:10px;padding:13px 14px;font-weight:800;font-size:15px;cursor:pointer;text-align:center;text-decoration:none}.primary{background:linear-gradient(135deg,#003300,#006400);color:#fff}.secondary{background:#eef1f5;color:#555}.input-row{display:flex;gap:8px;margin-top:12px}.input-row input{flex:1;border:1.5px solid #ddd;border-radius:10px;padding:12px;font-size:16px}.input-row button{border:0;border-radius:10px;padding:0 18px;background:#003300;color:#fff;font-weight:800}.commission{display:none}.commission.show{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.item{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:12px}.item b{display:block;color:#003300;font-size:15px}.item span{font-size:12px;color:#667085}.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;opacity:0;transition:.2s}.toast.show{opacity:1}@media(max-width:520px){.grid{grid-template-columns:1fr}.hero h1{font-size:20px}.card{margin:10px;padding:15px}.actions{flex-direction:column}.btn{width:100%}}
 .doc-view{background:#fff;border:1px solid #e5e7eb;border-radius:14px;margin-top:12px;padding:14px;max-height:none;overflow:visible}.doc-view h1,.doc-view h2,.doc-view h3{line-height:1.35;color:#003300}.doc-view h1{font-size:20px;border-bottom:2px solid #c6e6c6;padding-bottom:10px}.doc-view h2{font-size:17px;margin-top:22px;border-left:4px solid #f5a623;padding-left:10px}.doc-view h3{font-size:15px;margin-top:16px}.doc-view p{margin:8px 0}.doc-view ul{padding-left:22px}.doc-view li{margin:6px 0}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px;margin:10px 0}.doc-view table{border-collapse:collapse;min-width:620px;width:100%;font-size:12px}.doc-view th,.doc-view td{border-bottom:1px solid #e5e7eb;padding:8px;text-align:left;vertical-align:top}.doc-view th{background:#f0f7f0;color:#475569}@media(max-width:520px){.doc-view{padding:12px}.doc-view table{min-width:560px}}
+
+.eoi-calc{background:#fff;border:3px solid #f5a623;border-radius:16px;padding:16px;margin:14px 12px}
+.eoi-calc h2{font-size:18px;color:#92400e;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.eoi-calc h2 .score-badge{background:#006400;color:#fff;border-radius:999px;padding:4px 14px;font-size:22px;min-width:50px;text-align:center}
+.eoi-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.eoi-row label{font-size:12px;font-weight:700;color:#475569;min-width:70px;display:flex;flex-direction:column}
+.eoi-row select,.eoi-row input{flex:1;min-width:120px;padding:8px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;background:#fafafa}
+.eoi-result{margin-top:12px;padding:12px;border-radius:10px;text-align:center;font-weight:700;font-size:15px}
+.eoi-result.pass{background:#dcfce7;color:#166534;border:2px solid #22c55e}
+.eoi-result.warn{background:#fef3c7;color:#92400e;border:2px solid #f59e0b}
+.eoi-result.fail{background:#fee2e2;color:#991b1b;border:2px solid #ef4444}
+@media(max-width:520px){.eoi-row{flex-direction:column}.eoi-row select,.eoi-row input{width:100%}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="hero"><h1>🇦🇺 执行策划案已生成</h1><p>澳大利亚移民 · 手机端可直接阅读客户交付版文档</p></div>
+  <div class="eoi-calc">
+    <h2>🧮 EOI 实时打分计算器 <span class="score-badge" id="eoiScore">0</span> 分</h2>
+    <p class="muted" style="font-size:12px;margin-bottom:8px">选择客户条件 → 自动计算 EOI 分数 → 对比邀请线</p>
+    <div class="eoi-row">
+      <label>年龄 <select id="e_age" onchange="calcEOI()"><option value="">请选择</option><option value="25">18-24岁(25分)</option><option value="30" selected>25-32岁(30分)</option><option value="25">33-39岁(25分)</option><option value="15">40-44岁(15分)</option><option value="0">45岁+（技术移民不可用）</option></select></label>
+      <label>英语 <select id="e_eng" onchange="calcEOI()"><option value="">请选择</option><option value="20">雅思8+/PTE79+(20分)</option><option value="10" selected>雅思7+/PTE65+(10分)</option><option value="0">雅思6+/PTE50+(0分)</option></select></label>
+    </div>
+    <div class="eoi-row">
+      <label>海外经验 <select id="e_os" onchange="calcEOI()"><option value="">请选择</option><option value="15">≥8年(15分)</option><option value="10" selected>5-7年(10分)</option><option value="5">3-4年(5分)</option><option value="0"><3年(0分)</option></select></label>
+      <label>澳洲经验 <select id="e_au" onchange="calcEOI()"><option value="0" selected>无澳洲经验(0分)</option><option value="20">≥8年(20分)</option><option value="15">5-7年(15分)</option><option value="10">3-4年(10分)</option><option value="5">1-2年(5分)</option></select></label>
+    </div>
+    <div class="eoi-row">
+      <label>学历 <select id="e_edu" onchange="calcEOI()"><option value="">请选择</option><option value="20">博士(20分)</option><option value="15" selected>本科/硕士(15分)</option><option value="10">大专/文凭(10分)</option></select></label>
+      <label>STEM <select id="e_stem" onchange="calcEOI()"><option value="0" selected>否(0分)</option><option value="10">是(+10分)</option></select></label>
+    </div>
+    <div class="eoi-row">
+      <label>配偶 <select id="e_sp" onchange="calcEOI()"><option value="0" selected>不适用(0分)</option><option value="10">配偶有职业评估+雅思6+&lt;45岁(+10分)</option></select></label>
+      <label>NAATI <select id="e_naati" onchange="calcEOI()"><option value="0" selected>无(0分)</option><option value="5">有NAATI认证(+5分)</option></select></label>
+    </div>
+    <div class="eoi-row">
+      <label>PY专业年 <select id="e_py" onchange="calcEOI()"><option value="0" selected>无(0分)</option><option value="5">会计/IT/工程PY(+5分)</option></select></label>
+      <label>州担保 <select id="e_state" onchange="calcEOI()"><option value="0" selected>189独立(不加分)</option><option value="5">190州担保(+5分)</option><option value="15">491偏远(+15分)</option></select></label>
+    </div>
+    <div class="eoi-result" id="eoiResult">📊 请选择客户条件开始打分</div>
+  </div>
 <div class="card">
 <h2>📄 执行策划案文档</h2>
 <div class="muted" id="meta">正在生成执行策划案...</div>
@@ -105,7 +143,7 @@ var md=`
 | 社区语言(NAATI) | 0分 | 5分 | 📞 需通过NAATI考试 |
 | 专业年(PY) | 0分 | 5分 | 📞 仅限会计/IT/工程在澳完成 |
 | 州担保加分 | 0分（189） | 5分（190）/ 15分（491） | 📞 取决于通道选择 |
-| **预估EOI总分** | **⚠️ 待计算** | **—** | **189邀请线75-85+ / 190邀请线80-90+** |
+| **预估EOI总分** | **__EOI_LIVE__** | **—** | **189邀请线75-85+ / 190邀请线80-90+** |
 
 > ⚠️ 实际获邀分数因职业、配额、竞争而变化。以上为2025-2026财年参考阈值。会计/IT类通常需90-95+，工程/医护类60-70+即有可能获邀。
 
@@ -1263,9 +1301,68 @@ document.getElementById('docView').innerHTML=mdToHtml(md);
 
 }
 
+function calcEOI(){
+  var fields=['e_age','e_eng','e_os','e_au','e_edu','e_stem','e_sp','e_naati','e_py','e_state'];
+  var total=0,missing=false;
+  for(var i=0;i<fields.length;i++){
+    var el=document.getElementById(fields[i]);
+    if(!el || el.value==='') {missing=true;continue}
+    total+=parseInt(el.value)||0;
+  }
+  var badge=document.getElementById('eoiScore');
+  var result=document.getElementById('eoiResult');
+  if(badge) badge.textContent=total;
+  if(!result) return;
+  var ageEl=document.getElementById('e_age');
+  var age45=(ageEl&&ageEl.value==='0');
+  if(age45){
+    result.className='eoi-result fail';
+    result.innerHTML='❌ 年龄≥45岁，不满足189/190/491/186 DE技术移民基本条件<br><span style="font-weight:400;font-size:12px">建议转向NIV 858或482 SID雇主担保路径</span>';
+    return;
+  }
+  if(missing){
+    result.className='eoi-result warn';
+    result.innerHTML='📊 请完善所有打分项以计算EOI总分';
+    return;
+  }
+  var stateEl=document.getElementById('e_state');
+  var stateBonus=parseInt(stateEl&&stateEl.value||'0');
+  var path189=(stateBonus===0?'189':(stateBonus===5?'190':'491'));
+  var minLine=stateBonus===0?75:(stateBonus===5?80:75);
+  if(total>=minLine){
+    result.className='eoi-result pass';
+    result.innerHTML='✅ EOI总分 <b>'+total+'分</b> — 达到<b>'+path189+'</b>邀请线参考值（≥'+minLine+'分）<br><span style="font-weight:400;font-size:12px">⚠️ 实际获邀取决于职业配额和同职业申请人竞争</span>';
+  } else if(total>=65){
+    result.className='eoi-result warn';
+    result.innerHTML='⚠️ EOI总分 <b>'+total+'分</b> — 可入池(≥65分)但低于<b>'+path189+'</b>最近邀请线（≥'+minLine+'分）<br><span style="font-weight:400;font-size:12px">建议：提升英语至8+、叠加州担保、考虑491偏远地区</span>';
+  } else {
+    result.className='eoi-result fail';
+    result.innerHTML='❌ EOI总分 <b>'+total+'分</b> — 未达到65分入池门槛<br><span style="font-weight:400;font-size:12px">建议检查打分项或转向NIV/482 SID雇主担保路径</span>';
+  }
+  // Also update EOI table in markdown
+  updateEOITable(total);
+}
+
+function updateEOITable(score){
+  var dv=document.getElementById('docView');
+  if(!dv) return;
+  var ph=dv.querySelector('#eoiLiveResult');
+  if(!ph){
+    // find the placeholder paragraph
+    var ps=dv.querySelectorAll('p');
+    for(var i=0;i<ps.length;i++){
+      if(ps[i].textContent.indexOf('__EOI_LIVE__')>=0){
+        ph=ps[i]; break;
+      }
+    }
+  }
+  if(ph) ph.innerHTML='当前EOI总分: <b style="font-size:18px;color:#006400">'+score+'分</b>';
+}
+
 function checkPwd(){if(document.getElementById('pwd').value==='888888'){document.getElementById('commission').classList.add('show');document.getElementById('commission').scrollIntoView({behavior:'smooth'})}else{toast('密码错误，请重试')}}
 function goBackStage(){var issue=q('issue');location.href='https://sewen38.github.io/au-assessment/?issue='+issue+'&country=au';}
 buildPlan();
+calcEOI();
 </script>
 </body>
 </html>
